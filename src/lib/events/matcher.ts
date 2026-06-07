@@ -24,9 +24,9 @@ function matches(event: IncomingEvent, alert: AlertWithConditions): boolean {
   });
 }
 
-export function matchAlerts(
+export function matchAlerts<T extends AlertWithConditions>(
   event: IncomingEvent,
-  alerts: AlertWithConditions[]
-): AlertWithConditions[] {
+  alerts: T[]
+): T[] {
   return alerts.filter((alert) => matches(event, alert));
 }

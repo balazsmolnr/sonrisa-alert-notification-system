@@ -202,3 +202,19 @@ _[New entries added as development proceeds]_
 **Prompt:** Write the users page.
 **Output:** Server Component. Auth check. Table with columns: Name, Email, API key (last 8 chars visible, rest masked), Alert count (via _count), Created date. Sorted by createdAt desc.
 **Accepted.**
+
+---
+
+### 2026-06-07 — Build fix: layout.tsx searchParams + AdminNav Suspense
+
+**Prompt:** `npm run build` failed — Next.js layouts don't receive searchParams. Fix by extracting nav to a client component using useSearchParams(), wrapped in Suspense with a fallback.
+**Output:** Created `src/app/admin/_components/AdminNav.tsx` (client component, useSearchParams, AdminNavFallback export). Rewrote `layout.tsx` to import AdminNav wrapped in `<Suspense fallback={<AdminNavFallback />}>`.
+**Accepted.**
+
+---
+
+### 2026-06-07 — Build fix: matchAlerts generic type
+
+**Prompt:** Build error — matchAlerts returns AlertWithConditions[] but dispatch expects AlertWithChannels. The return type drops the channels property.
+**Output:** Made matchAlerts generic: `function matchAlerts<T extends AlertWithConditions>(alerts: T[]): T[]`. The function now preserves the full input type, so FullAlert[] in → FullAlert[] out.
+**Accepted.**
