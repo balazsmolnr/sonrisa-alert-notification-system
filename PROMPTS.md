@@ -146,3 +146,59 @@ _[New entries added as development proceeds]_
 **Prompt:** Show the plan for the event ingestion layer before writing any code.
 **Output:** Planned `types.ts` (EventSource interface + IncomingEvent type), `mock.ts` (hardcoded test events), `newsapi.ts` (NewsAPI integration, severity hardcoded to "medium"), `matcher.ts` (OR condition matching), `src/app/api/ingest/route.ts` (Vercel Cron entry point with dedup, dispatch, processedAt tracking).
 **Accepted with OR logic confirmed.**
+
+---
+
+### 2026-06-07 — Admin UI auth decision
+
+**Prompt:** Add decision: Admin pages protected by `?key=` query param matching `ADMIN_API_KEY` env var. No session, no cookie. Known limitation: key visible in browser history and logs.
+**Output:** Added to DECISIONS.md.
+**Accepted.**
+
+---
+
+### 2026-06-07 — Admin UI plan
+
+**Prompt:** Show the plan for the Admin UI before writing anything. Keep it simple, read-only, no authentication beyond existing API key pattern. Prioritise alert list and delivery log over user list. Auto-append key to nav links.
+**Output:** Planned Server Components querying Prisma directly. `layout.tsx` (nav shell), `admin/page.tsx` (alert list), `admin/logs/page.tsx` (delivery log, last 100 rows), `admin/users/page.tsx` (user list, lower priority). Auth via `?key=` query param. Tailwind utility classes, plain `<table>` layout.
+**Accepted.**
+
+---
+
+### 2026-06-07 — src/app/admin/layout.tsx
+
+**Prompt:** Write layout.tsx first — shared nav shell with auto-appended ?key= param on all links.
+**Output:** Server Component with nav links to Alerts, Delivery Log, Users. Key forwarded via searchParams to all nav hrefs.
+**Accepted.**
+
+---
+
+### 2026-06-07 — src/app/admin/page.tsx
+
+**Prompt:** Write the alert list page.
+**Output:** Server Component. Auth check against ADMIN_API_KEY env var. Table with columns: Name, User email, Status (badge), Conditions count, Channels count, Created date. Uses Prisma _count for condition/channel counts. Sorted by createdAt desc.
+**Accepted.**
+
+---
+
+### 2026-06-07 — unauthorized() duplication noted
+
+**Prompt:** Note in DECISIONS.md that unauthorized() is duplicated across admin pages, worth refactoring to a shared component in the future.
+**Output:** Added to DECISIONS.md. Suggested future path: `src/app/admin/_components/Unauthorized.tsx`.
+**Accepted.**
+
+---
+
+### 2026-06-07 — src/app/admin/logs/page.tsx
+
+**Prompt:** Write the delivery log page.
+**Output:** Server Component. Auth check. Table with last 100 NotificationLog rows: Sent at, Alert name, Event headline (truncated with title attr), Channel type, Status badge (green/red), Error message (truncated to 60 chars, full text on hover). Sorted by sentAt desc.
+**Accepted.**
+
+---
+
+### 2026-06-07 — src/app/admin/users/page.tsx
+
+**Prompt:** Write the users page.
+**Output:** Server Component. Auth check. Table with columns: Name, Email, API key (last 8 chars visible, rest masked), Alert count (via _count), Created date. Sorted by createdAt desc.
+**Accepted.**

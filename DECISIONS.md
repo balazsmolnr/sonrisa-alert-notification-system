@@ -102,6 +102,22 @@ _[New entries added as development proceeds]_
 
 ---
 
+### 2026-06-07 — Admin UI authentication: query param key
+
+**Decision:** Admin pages are protected by a `?key=` query param matching `ADMIN_API_KEY` env var. No session, no cookie.
+**Accepted for v1:** Simple, shareable, zero infrastructure.
+**Known limitation:** The key appears in browser history, server logs, and any URL sharing. Not suitable for production. A proper solution would use a session cookie or HTTP Basic Auth.
+
+---
+
+### 2026-06-07 — Admin unauthorized() helper is duplicated across pages
+
+**Decision:** `unauthorized()` is defined inline in each admin page rather than as a shared component.
+**Accepted for v1:** Only two pages currently need it; extraction before a third exists is premature.
+**Known concern:** As pages grow, this should be refactored to `src/app/admin/_components/Unauthorized.tsx` and imported by each page.
+
+---
+
 ### 2026-06-07 — Keyword matching scope
 
 **Decision:** Keyword conditions match against `headline` and `summary` fields only — not `url` or `category`.
