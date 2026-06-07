@@ -39,8 +39,24 @@ Each entry:
 
 _[New entries added as development proceeds]_
 
-### 2026-06-07 — Backend stack váltás: Express → Next.js
+### 2026-06-07 — Backend stack switch: Express → Next.js
 
-**Eredeti AI javaslat:** Express + külön PostgreSQL backend, külön React frontend.  
-**Megváltoztatva:** Next.js + Supabase + Vercel (egy repo, minden egyben).  
-**Miért:** Az eredeti stack-et az AI anélkül választotta, hogy megkérdezte volna a tapasztalati szintet vagy a preferenciákat. Miután kiderült, hogy egyik stackben sincs tapasztalat, a Next.js logikusabb választás — kevesebb konfigurációs overhead, egy deployment, és a "backend" ugyanolyan TypeScript mint a frontend. A feladat értékelési szempontja a folyamat minősége, nem a backend komplexitása.
+**Original AI suggestion:** Express + separate PostgreSQL backend, separate React frontend.
+**Changed to:** Next.js + Supabase + Vercel (one repo, everything together).
+**Reasoning:** The original stack was chosen by the AI without asking about experience level or preferences. Once it became clear there was no experience with either stack, Next.js was the more logical choice — less configuration overhead, single deployment, and the "backend" is the same TypeScript as the frontend. The evaluation criterion for the task is the quality of the process, not backend complexity.
+
+---
+
+### 2026-06-07 — authenticate() hits the database on every request
+
+**Decision:** `authenticate()` in `src/lib/api-helpers.ts` runs a `SELECT` against the `User` table on every API call — no caching.
+**Accepted for v1 because:** Request volume at prototype scale is negligible; adding a cache layer (e.g. Redis, in-memory LRU) before there is a measurable problem is premature.
+**Known scaling concern:** At higher request volume, this adds one DB round-trip per request. Mitigation when needed: short-lived in-memory or Redis cache keyed on the API key, with a TTL of ~60 seconds.
+
+---
+
+### 2026-06-07 — Channel config validation deferred to dispatcher
+
+**AI suggestion:** Validate channel config contents at the API layer (e.g. require `address` field on email channels).
+**Decision:** API layer only checks that `config` is a non-null object. Deep validation (e.g. required fields per channel type) is deferred to the channel dispatcher.
+**Reasoning:** Keeping validation in one place — the dispatcher already has to understand channel-specific config to send notifications. Duplicating that knowledge in the API layer creates two places to update when a new channel type is added.
