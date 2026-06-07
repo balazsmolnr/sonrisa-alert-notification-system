@@ -250,3 +250,11 @@ _[New entries added as development proceeds]_
 **Prompt:** .env.example was silently ignored by .gitignore (.env* pattern). Fix .gitignore and recommit. Update DECISIONS.md and PROMPTS.md.
 **Output:** Added `!.env.example` exception to .gitignore. Added DECISIONS.md entry documenting why it became necessary (all 7 env vars documented, repo tracking essential). Force-added .env.example to git.
 **Accepted.**
+
+---
+
+### 2026-06-07 — Local .env completed, Vercel deployed
+
+**Prompt:** Add missing env vars (RESEND_API_KEY, RESEND_FROM_EMAIL, NEWSAPI_KEY, CRON_SECRET, ADMIN_API_KEY) to local .env. User filled in real values and deployed to Vercel.
+**Output:** Appended 5 placeholder vars to .env on feature/env-vars branch. User replaced placeholders with real values and imported to Vercel. .env is gitignored — no secrets committed.
+**Accepted.**
