@@ -226,3 +226,19 @@ _[New entries added as development proceeds]_
 **Prompt:** Add a DECISIONS.md entry noting that matchAlerts was made generic during the build fix to preserve the full alert type through to dispatch. Caught by TypeScript at build time, not runtime.
 **Output:** Added entry to DECISIONS.md documenting the generic refactor, why it was needed, and noting this as an example of TypeScript catching a real correctness bug before runtime.
 **Accepted.**
+
+---
+
+### 2026-06-07 — .env.example
+
+**Prompt:** Write the full .env.example with all required environment variables.
+**Output:** Added RESEND_API_KEY, RESEND_FROM_EMAIL, NEWSAPI_KEY, CRON_SECRET, ADMIN_API_KEY alongside the existing Supabase vars. Each entry has a comment explaining where to get the value and how to generate secrets.
+**Accepted.**
+
+---
+
+### 2026-06-07 — vercel.json
+
+**Prompt:** Write vercel.json with cron schedule for /api/ingest every 5 minutes.
+**Output:** Minimal vercel.json with one cron entry: path /api/ingest, schedule */5 * * * *. Vercel automatically sends Authorization: Bearer $CRON_SECRET on cron invocations.
+**Accepted.**
