@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  apiKey    String   @unique @default(cuid())
+  createdAt DateTime @default(now())
+
+  alerts Alert[]
+}
+
+model Alert {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  user       User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  conditions AlertCondition[]
+  channels   AlertChannel[]
+  logs       NotificationLog[]
+
+  @@index([userId])
+}
+
+enum ConditionType {
+  keyword
+  category
+  severity
+}
+
+model AlertCondition {
+  id      String        @id @default(cuid())
+  alertId String
+  type    ConditionType
+  value   String
+
+  alert Alert @relation(fields: [alertId], references: [id], onDelete: Cascade)
+
+  @@index([alertId])
+  @@index([type, value])
+}
+
+enum ChannelType {
+  email
+  slack
+}
+
+model AlertChannel {
+  id          String      @id @default(cuid())
+  alertId     String
+  channelType ChannelType
+  config      Json
+
+  alert Alert @relation(fields: [alertId], references: [id], onDelete: Cascade)
+}
+
+model Event {
+  id          String    @id @default(cuid())
+  sourceId    String    @unique
+  headline    String
+  summary     String?
+  category    String
+  severity    String
+  url         String?
+  publishedAt DateTime
+  processedAt DateTime?
+
+  logs NotificationLog[]
+}
+
+enum NotificationStatus {
+  sent
+  failed
+}
+
+model NotificationLog {
+  id           String             @id @default(cuid())
+  alertId      String
+  eventId      String
+  channelType  ChannelType
+  status       NotificationStatus
+  sentAt       DateTime           @default(now())
+  errorMessage String?
+
+  alert Alert @relation(fields: [alertId], references: [id])
+  event Event @relation(fields: [eventId], references: [id])
+
+  @@index([alertId])
+  @@index([eventId])
+  @@index([status])
+}
