@@ -7,6 +7,7 @@ This file documents every significant decision, AI course-correction, and reject
 ## Format
 
 Each entry:
+
 - **What the AI suggested or produced**
 - **What I accepted, rejected, or changed**
 - **Why**
@@ -60,3 +61,48 @@ _[New entries added as development proceeds]_
 **AI suggestion:** Validate channel config contents at the API layer (e.g. require `address` field on email channels).
 **Decision:** API layer only checks that `config` is a non-null object. Deep validation (e.g. required fields per channel type) is deferred to the channel dispatcher.
 **Reasoning:** Keeping validation in one place — the dispatcher already has to understand channel-specific config to send notifications. Duplicating that knowledge in the API layer creates two places to update when a new channel type is added.
+
+---
+
+### 2026-06-07 — Resend client instantiation per EmailChannel instance
+
+**Decision:** The `Resend` client is instantiated per `EmailChannel` instance rather than as a shared singleton.
+**Accepted for v1 because:** Notification volume at prototype scale is low; optimizing this prematurely adds complexity without measurable benefit.
+**Known concern:** At higher volume, repeated instantiation is wasteful. Fix when needed: move to a module-level singleton.
+
+---
+
+### 2026-06-07 — Channel config validation at constructor level
+
+**Decision:** Channel config content (e.g. presence of `address` for email, `webhookUrl` for Slack) is validated in the channel class constructor, not at the API layer.
+**Reasoning:** Validation lives close to where the config is used. The API layer only checks that config is a non-null object — adding channel-specific checks there would duplicate knowledge that already lives in the channel classes.
+
+---
+
+### 2026-06-07 — NewsAPI category mapped from source.id, not a true category
+
+**Decision:** The `category` field on ingested events is populated from `article.source.id` (e.g. `"bbc-news"`, `"the-verge"`), not a semantic category like "politics" or "disaster".
+**Reasoning:** NewsAPI's `/top-headlines` endpoint does not return a category field per article. `source.id` is the closest available proxy. Falls back to `"general"` when `source.id` is null.
+**Known limitation:** Users setting `category` conditions will need to match on source identifiers, not intuitive category names. Fix when needed: switch to `/top-headlines?category=...` endpoint and pass the category as a query param, then expose it on `IncomingEvent`.
+
+---
+
+### 2026-06-07 — Condition matching logic: OR
+
+**Decision:** An alert fires if ANY condition matches (OR logic), not all conditions (AND).
+**Reasoning:** Users add multiple conditions to subscribe to a broader topic set, not to narrow results. OR matches typical notification system behaviour. Users who want AND-like precision can create separate single-condition alerts.
+**Tradeoff:** No way to express "earthquake AND high severity" in one alert. Accepted for v1.
+
+---
+
+### 2026-06-07 — Ingest dedup strategy: batch findMany + createMany vs. upsert
+
+**Decision:** Instead of per-event upsert, the ingest route does one batch `findMany` to find existing sourceIds, filters them out, then `createMany` with `skipDuplicates: true`.
+**Reasoning:** More efficient for batches — one query instead of N upserts. `skipDuplicates` provides a safety net for race conditions. Tradeoff: a small window exists between the `findMany` and `createMany` where a duplicate could slip through — `skipDuplicates` handles this.
+
+---
+
+### 2026-06-07 — Keyword matching scope
+
+**Decision:** Keyword conditions match against `headline` and `summary` fields only — not `url` or `category`.
+**Reasoning:** These are the human-readable fields where meaningful keywords appear. Matching against URL or category strings would produce false positives.
