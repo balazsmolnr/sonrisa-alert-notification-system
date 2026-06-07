@@ -118,6 +118,14 @@ _[New entries added as development proceeds]_
 
 ---
 
+### 2026-06-07 — matchAlerts made generic to preserve full alert type
+
+**Decision:** `matchAlerts` was refactored from `(alerts: AlertWithConditions[]) => AlertWithConditions[]` to a generic `<T extends AlertWithConditions>(alerts: T[]) => T[]`.
+**Why it was needed:** The ingest route loads alerts as `FullAlert` (conditions + channels). After passing through `matchAlerts`, the return type narrowed to `AlertWithConditions`, dropping the `channels` property that `dispatch` requires. TypeScript caught this at build time before it could fail silently at runtime.
+**Note:** This is a good example of TypeScript's type system catching a real correctness bug — without the generic, the code would have compiled with a cast and potentially crashed at runtime when `dispatch` tried to access `alert.channels`.
+
+---
+
 ### 2026-06-07 — Keyword matching scope
 
 **Decision:** Keyword conditions match against `headline` and `summary` fields only — not `url` or `category`.

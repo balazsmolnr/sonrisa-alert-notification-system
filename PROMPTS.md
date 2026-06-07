@@ -218,3 +218,11 @@ _[New entries added as development proceeds]_
 **Prompt:** Build error — matchAlerts returns AlertWithConditions[] but dispatch expects AlertWithChannels. The return type drops the channels property.
 **Output:** Made matchAlerts generic: `function matchAlerts<T extends AlertWithConditions>(alerts: T[]): T[]`. The function now preserves the full input type, so FullAlert[] in → FullAlert[] out.
 **Accepted.**
+
+---
+
+### 2026-06-07 — DECISIONS.md entry: matchAlerts generic
+
+**Prompt:** Add a DECISIONS.md entry noting that matchAlerts was made generic during the build fix to preserve the full alert type through to dispatch. Caught by TypeScript at build time, not runtime.
+**Output:** Added entry to DECISIONS.md documenting the generic refactor, why it was needed, and noting this as an example of TypeScript catching a real correctness bug before runtime.
+**Accepted.**
