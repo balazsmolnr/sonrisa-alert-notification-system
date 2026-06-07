@@ -242,3 +242,11 @@ _[New entries added as development proceeds]_
 **Prompt:** Write vercel.json with cron schedule for /api/ingest every 5 minutes.
 **Output:** Minimal vercel.json with one cron entry: path /api/ingest, schedule */5 * * * *. Vercel automatically sends Authorization: Bearer $CRON_SECRET on cron invocations.
 **Accepted.**
+
+---
+
+### 2026-06-07 — .gitignore fix: allow .env.example
+
+**Prompt:** .env.example was silently ignored by .gitignore (.env* pattern). Fix .gitignore and recommit. Update DECISIONS.md and PROMPTS.md.
+**Output:** Added `!.env.example` exception to .gitignore. Added DECISIONS.md entry documenting why it became necessary (all 7 env vars documented, repo tracking essential). Force-added .env.example to git.
+**Accepted.**

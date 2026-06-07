@@ -130,3 +130,11 @@ _[New entries added as development proceeds]_
 
 **Decision:** Keyword conditions match against `headline` and `summary` fields only — not `url` or `category`.
 **Reasoning:** These are the human-readable fields where meaningful keywords appear. Matching against URL or category strings would produce false positives.
+
+---
+
+### 2026-06-07 — .env.example excluded from .gitignore
+
+**Decision:** Added `!.env.example` exception to `.gitignore` so the example env file is committed to the repo.
+**Why it became necessary:** The Next.js scaffold's `.gitignore` uses `.env*` which catches `.env.example`. When the env example only had Supabase vars it was optional. Once it documented all 7 required env vars (including API keys and secrets), it became essential for the repo to track it.
+**Earlier decision:** Previously rejected as unnecessary — revisited when `.env.example` was silently excluded from the deployment config commit.
