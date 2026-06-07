@@ -258,3 +258,11 @@ _[New entries added as development proceeds]_
 **Prompt:** Add missing env vars (RESEND_API_KEY, RESEND_FROM_EMAIL, NEWSAPI_KEY, CRON_SECRET, ADMIN_API_KEY) to local .env. User filled in real values and deployed to Vercel.
 **Output:** Appended 5 placeholder vars to .env on feature/env-vars branch. User replaced placeholders with real values and imported to Vercel. .env is gitignored — no secrets committed.
 **Accepted.**
+
+---
+
+### 2026-06-07 — README.md
+
+**Prompt:** Write README.md covering: project overview, architecture summary (stack + key design decisions), project structure, local setup, API reference, manual ingest trigger, admin UI, out of scope / future work. Technical but readable, not longer than necessary.
+**Output:** Full README with architecture table, project structure tree, env var table, curl examples for all endpoints, admin UI page reference, and 8-item future work list.
+**Accepted.**
