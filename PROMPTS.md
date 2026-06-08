@@ -274,3 +274,11 @@ _[New entries added as development proceeds]_
 **Prompt:** Change vercel.json cron schedule from */5 * * * * to 0 9 * * * to prevent deployment failure on Vercel Hobby plan.
 **Output:** Updated vercel.json schedule. DECISIONS.md entry already added by user. Committed on fix/vercel-cron-schedule branch.
 **Accepted.**
+
+---
+
+### 2026-06-08 — Smoke test screenshot
+
+**Prompt:** End-to-end smoke test passed. Create a screenshots folder and add the delivery log screenshot showing a successful Slack notification for "Major earthquake strikes southern region".
+**Output:** Created `screenshots/` folder, committed screenshot on `chore/screenshots` branch, merged to main.
+**Accepted.**
