@@ -266,3 +266,11 @@ _[New entries added as development proceeds]_
 **Prompt:** Write README.md covering: project overview, architecture summary (stack + key design decisions), project structure, local setup, API reference, manual ingest trigger, admin UI, out of scope / future work. Technical but readable, not longer than necessary.
 **Output:** Full README with architecture table, project structure tree, env var table, curl examples for all endpoints, admin UI page reference, and 8-item future work list.
 **Accepted.**
+
+---
+
+### 2026-06-08 — fix: vercel cron schedule
+
+**Prompt:** Change vercel.json cron schedule from */5 * * * * to 0 9 * * * to prevent deployment failure on Vercel Hobby plan.
+**Output:** Updated vercel.json schedule. DECISIONS.md entry already added by user. Committed on fix/vercel-cron-schedule branch.
+**Accepted.**

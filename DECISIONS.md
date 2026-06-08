@@ -138,3 +138,11 @@ _[New entries added as development proceeds]_
 **Decision:** Added `!.env.example` exception to `.gitignore` so the example env file is committed to the repo.
 **Why it became necessary:** The Next.js scaffold's `.gitignore` uses `.env*` which catches `.env.example`. When the env example only had Supabase vars it was optional. Once it documented all 7 required env vars (including API keys and secrets), it became essential for the repo to track it.
 **Earlier decision:** Previously rejected as unnecessary — revisited when `.env.example` was silently excluded from the deployment config commit.
+
+---
+
+### 2026-06-08 — Vercel Cron interval: Hobby plan limitation
+
+**Problem:** `vercel.json` configured cron at `*/5 * * * *` (every 5 min). Vercel Hobby plan only allows once-per-day cron jobs — deployment failed.
+**Fix:** Changed schedule to `0 9 * * *` (daily at 09:00 UTC).
+**Note:** Pro plan supports per-minute scheduling if more frequent polling is needed.
